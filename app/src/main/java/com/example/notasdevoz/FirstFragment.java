@@ -2,23 +2,20 @@ package com.example.notasdevoz;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.notasdevoz.databinding.FragmentFirstBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 
 public class FirstFragment extends Fragment {
 
@@ -26,16 +23,7 @@ public class FirstFragment extends Fragment {
     private boolean permissionToRecordAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
 
-    private ImageView logo;
-    private TextView estado;
-    private FloatingActionButton record;
-    private FloatingActionButton stop;
-    private FloatingActionButton play;
-
     private FragmentFirstBinding binding;
-
-    private MediaRecorder mRecorder = null;
-    private MediaPlayer mPlayer = null;
 
     @Override
     public View onCreateView(
