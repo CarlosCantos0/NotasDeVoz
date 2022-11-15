@@ -2,14 +2,13 @@ package com.example.notasdevoz;
 
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Environment;
-import android.view.View;
+import android.util.Log;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -20,6 +19,7 @@ import com.example.notasdevoz.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -49,6 +49,44 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         txtEstado = (TextView) this.findViewById(R.id.txtEstado);
+        ImageView imgView = (ImageView)findViewById(R.id.imageView);
+        ImageView imgPlay = (ImageView)findViewById(R.id.imgPlay);
+        ImageView imgPause = (ImageView)findViewById(R.id.imgPause);
+        ImageView imgRecord = (ImageView)findViewById(R.id.imgRecord);
+
+        imgPlay.setOnClickListener(v -> {
+            imgView.setImageDrawable(
+                    getResources().getDrawable(R.drawable.ic_baseline_play_arrow_24));
+            if (recorder == null && player == null) {
+                player = new MediaPlayer();
+                reproducir();
+            }
+        });
+
+        imgPause.setOnClickListener(v -> {
+            imgView.setImageDrawable(
+                    getResources().getDrawable(R.drawable.ic_baseline_pause_24));
+            if (recorder != null) {
+                detener();
+            } else if(player != null) {
+                player.stop();
+                player.release();
+                player = null;
+            }
+        });
+
+        imgRecord.setOnClickListener(v -> {
+            imgView.setImageDrawable(
+                    getResources().getDrawable(R.drawable.ic_baseline_record_voice_over_24));
+                    if (recorder == null) {
+                try {
+                    grabar();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -80,10 +118,10 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public void grabar(View v) throws IOException {
+    public void grabar() throws IOException {
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_2_TS);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         File rutaAudio = new File(Environment.getExternalStorageDirectory().getPath());
         try {
@@ -91,20 +129,25 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        recorder.setOutputFile(archivo.getAbsolutePath());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            recorder.setOutputFile(archivo);
+        }
+
         recorder.prepare();
         recorder.start();
         txtEstado.setText("Grabando..");
     }
 
-    public void detener(View v) {
+    public void detener() {
         recorder.stop();
+        recorder.reset();
         recorder.release();
         player = new MediaPlayer();
         player.setOnCompletionListener((MediaPlayer.OnCompletionListener) this);
         try {
             player.setDataSource(archivo.getAbsolutePath());
         } catch (IOException e) {
+            e.printStackTrace();
         }
         try {
             player.prepare();
@@ -113,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         txtEstado.setText("Listo para reproducir");
     }
 
-    public void reproducir(View v) {
+    public void reproducir() {
         player.start();
         txtEstado.setText("Reproduciendo");
     }
