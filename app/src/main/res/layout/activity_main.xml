@@ -20,6 +20,16 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/content_main" />
+
+    <ProgressBar
+        android:id="@+id/progressRepr"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="bottom|center" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

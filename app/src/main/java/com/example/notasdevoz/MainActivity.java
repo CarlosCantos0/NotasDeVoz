@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void grabar() throws IOException {
+        txtEstado.setText("Grabando");
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_2_TS);
@@ -134,13 +135,12 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             recorder.setOutputFile(archivo);
         }
-
         recorder.prepare();
         recorder.start();
-        txtEstado.setText("Grabando..");
     }
 
     public void detener() {
+        txtEstado.setText("Pausa");
         recorder.stop();
         recorder.reset();
         recorder.release();
@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        txtEstado.setText("Listo para reproducir");
     }
 
     public void reproducir() {
